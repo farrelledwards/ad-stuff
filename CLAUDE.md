@@ -53,8 +53,9 @@ Since this is a static HTML site with no build process:
     <div class="item-details">
         <h2 class="item-name">Item Name</h2>
         <div class="item-price">XXX AED</div>
+        <div class="item-original-price">New: X,XXX AED</div>
         <p class="item-description">Description text</p>
-        <span class="item-condition">Condition</span>
+        <span class="item-availability">Available Dec 5</span>
     </div>
 </div>
 ```
@@ -68,8 +69,9 @@ Since this is a static HTML site with no build process:
     <div class="item-details">
         <h2 class="item-name">Item Name</h2>
         <div class="item-price">XXX AED</div>
+        <div class="item-original-price">New: X,XXX AED</div>
         <p class="item-description">Description text</p>
-        <span class="item-condition">Condition</span>
+        <span class="item-availability">Immediate</span>
     </div>
 </div>
 ```
