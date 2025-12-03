@@ -23,11 +23,32 @@
             margin: 0 auto;
         }
         
+        .location {
+            font-size: 1em;
+            padding: 6px;
+        }
+        
         header {
             text-align: center;
             color: white;
             padding: 40px 20px;
             margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header-badge {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         
         header h1 {
@@ -35,7 +56,7 @@
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        
+
         header p {
             font-size: 1.2em;
             opacity: 0.95;
@@ -288,6 +309,13 @@
                 font-size: 2em;
             }
 
+            .header-badge {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+                font-size: 0.8em;
+            }
+
             .items-grid {
                 grid-template-columns: 1fr;
             }
@@ -318,9 +346,13 @@
     <div class="container">
         <header>
             <h1>🏠 Abu Dhabi Moving Sale</h1>
-            <p>Contact: Laurel @ WhatsApp: <a href="https://wa.me/971585434939">+971 58 543 4939</a></p>
-            <span>Located on Saadiyat Island in Abu Dhabi - Pickup only</span>
-            <p>All items are 1 year old.</p>
+            <p>Contact: Laurel @ WhatsApp <a href="https://wa.me/971585434939">+971 58 543 4939</a></p>
+            <p class="location">Located on Saadiyat Island - Pickup only</p>
+            <div class="header-badge">
+              <p>All items</p>
+              <p>purchased new</p>
+              <p>1 year ago</p>
+            </div>
         </header>
         
         <div class="items-grid">
@@ -361,7 +393,7 @@
                     <p class="item-description">
                         Table with 6 chairs. Minor wear on table surface but structurally sound. Easy to disassemble for transport.
                     </p>
-                    <span class="item-availability">Immediate</span>
+                    <span class="item-availability">Available now</span>
                 </div>
             </div>
             
@@ -377,11 +409,41 @@
                     <p class="item-description">
                         Trek mountain bike, 21-speed. Recently serviced with new tires. Perfect for weekend adventures.
                     </p>
-                    <span class="item-availability">Immediate</span>
+                    <span class="item-availability">Available now</span>
                 </div>
             </div>
             
-            <!-- Add more items here by copying the item-card div -->
+            <!-- Example Item 4 -->
+            <div class="item-card single-image">
+                <div class="item-image-container">
+                    <img src="https://via.placeholder.com/400x300/667eea/ffffff?text=Item+Photo" alt="Mountain Bike" class="item-image item-main-image" data-full-image="https://via.placeholder.com/400x300/667eea/ffffff?text=Item+Photo">
+                </div>
+                <div class="item-details">
+                    <h2 class="item-name">Mountain Bike</h2>
+                    <div class="item-price">950 AED</div>
+                    <div class="item-original-price">New: 1,600 AED</div>
+                    <p class="item-description">
+                        Trek mountain bike, 21-speed. Recently serviced with new tires. Perfect for weekend adventures.
+                    </p>
+                    <span class="item-availability">Available now</span>
+                </div>
+            </div>
+
+            <!-- Example Item 5 -->
+            <div class="item-card single-image">
+                <div class="item-image-container">
+                    <img src="https://via.placeholder.com/400x300/667eea/ffffff?text=Item+Photo" alt="Mountain Bike" class="item-image item-main-image" data-full-image="https://via.placeholder.com/400x300/667eea/ffffff?text=Item+Photo">
+                </div>
+                <div class="item-details">
+                    <h2 class="item-name">Mountain Bike</h2>
+                    <div class="item-price">950 AED</div>
+                    <div class="item-original-price">New: 1,600 AED</div>
+                    <p class="item-description">
+                        Trek mountain bike, 21-speed. Recently serviced with new tires. Perfect for weekend adventures.
+                    </p>
+                    <span class="item-availability">Available now</span>
+                </div>
+            </div>
             
         </div>
     </div>
