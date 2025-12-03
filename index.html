@@ -40,7 +40,18 @@
             font-size: 1.2em;
             opacity: 0.95;
         }
-        
+
+        header a {
+            color: white;
+            text-decoration: underline;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
+        }
+
+        header a:hover {
+            opacity: 0.8;
+        }
+
         .items-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -217,14 +228,14 @@
         }
         
         .item-name {
-            font-size: 1.4em;
+            font-size: 1.8em;
             font-weight: 600;
             color: #1f2937;
             margin-bottom: 10px;
         }
         
         .item-price {
-            font-size: 1.8em;
+            font-size: 1.4em;
             color: #667eea;
             font-weight: bold;
             margin-bottom: 15px;
@@ -256,6 +267,12 @@
         footer a {
             color: white;
             text-decoration: underline;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
         }
         
         @media (max-width: 768px) {
@@ -293,18 +310,19 @@
     <div class="container">
         <header>
             <h1>🏠 Abu Dhabi Moving Sale</h1>
-            <p>Relocating to Utah - Everything must go!</p>
+            <p>Contact: Laurel @ WhatsApp: <a href="https://wa.me/971585434939">+971 58 543 4939</a></p>
+            <span>Located in Abu Dhabi - Pickup only</span>
         </header>
         
         <div class="items-grid">
             <!-- Example Item 1 -->
             <div class="item-card">
                 <div class="item-image-container">
-                    <img src="images/1.png" alt="Samsung 55&quot; 4K TV" class="item-image item-main-image" data-full-image="images/1.png">
+                    <img src="images/IMG_0203.jpeg" alt="Samsung 55&quot; 4K TV" class="item-image item-main-image" data-full-image="images/IMG_0203.jpeg">
                     <div class="item-thumbnails">
-                        <img src="images/1.png" class="thumbnail active" data-full-image="images/1.png" alt="Front view">
-                        <img src="images/2.png" class="thumbnail" data-full-image="images/2.png" alt="Side view">
-                        <img src="images/3.png" class="thumbnail" data-full-image="images/3.png" alt="Detail">
+                        <img src="images/IMG_0203.jpeg" class="thumbnail active" data-full-image="images/IMG_0203.jpeg" alt="Front view">
+                        <img src="images/IMG_0204.jpeg" class="thumbnail" data-full-image="images/IMG_0204.jpeg" alt="Side view">
+                        <img src="images/IMG_0205.jpeg" class="thumbnail" data-full-image="images/IMG_0205.jpeg" alt="Detail">
                     </div>
                 </div>
                 <div class="item-details">
@@ -356,7 +374,7 @@
         </div>
         
         <footer>
-            <p>Contact: your.email@example.com | WhatsApp: +971 XX XXX XXXX</p>
+            <p>Contact: Laurel @ WhatsApp: <a href="https://wa.me/971585434939">+971 58 543 4939</a></p>
             <p>Located in Abu Dhabi - Pickup only</p>
         </footer>
     </div>
