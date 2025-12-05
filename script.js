@@ -118,7 +118,7 @@
     }
 
     /**
-     * Render image container with thumbnails for an item
+     * Render image container with arrow navigation for an item
      */
     function renderImageContainer(item) {
         if (item.images.length === 0) {
@@ -126,24 +126,23 @@
         }
 
         const mainImage = item.images[0];
-        const thumbnails = item.images.length > 1
-            ? `<div class="item-thumbnails">
-                ${item.images.map((img, index) => `
-                    <img src="${img}"
-                         class="thumbnail${index === 0 ? ' active' : ''}"
-                         data-full-image="${img}"
-                         alt="View ${index + 1}">
-                `).join('')}
-               </div>`
+        const hasMultipleImages = item.images.length > 1;
+
+        // Navigation UI for multiple images
+        const navigationHTML = hasMultipleImages
+            ? `<button class="image-nav-prev" aria-label="Previous image">‹</button>
+               <button class="image-nav-next" aria-label="Next image">›</button>
+               <div class="image-counter">1 / ${item.images.length}</div>`
             : '';
 
         return `
-            <div class="item-image-container">
+            <div class="item-image-container" data-images='${JSON.stringify(item.images)}'>
                 <img src="${mainImage}"
                      alt="${escapeHtml(item.name)}"
                      class="item-image item-main-image"
-                     data-full-image="${mainImage}">
-                ${thumbnails}
+                     data-full-image="${mainImage}"
+                     data-current-index="0">
+                ${navigationHTML}
             </div>
         `;
     }
@@ -195,6 +194,62 @@
         `;
     }
 
+    // ========== IMAGE NAVIGATION ==========
+
+    /**
+     * Navigate through images in a card
+     * @param {HTMLElement} container - The item-image-container element
+     * @param {number} direction - Direction to navigate (-1 for prev, 1 for next)
+     */
+    function navigateImage(container, direction) {
+        const mainImage = container.querySelector('.item-main-image');
+        const counter = container.querySelector('.image-counter');
+
+        // Get image array from data attribute
+        const images = JSON.parse(container.getAttribute('data-images'));
+
+        // Get current index
+        let currentIndex = parseInt(mainImage.getAttribute('data-current-index') || 0);
+
+        // Calculate new index (with wrapping)
+        currentIndex = (currentIndex + direction + images.length) % images.length;
+
+        // Update image
+        mainImage.src = images[currentIndex];
+        mainImage.setAttribute('data-full-image', images[currentIndex]);
+        mainImage.setAttribute('data-current-index', currentIndex);
+
+        // Update counter
+        if (counter) {
+            counter.textContent = `${currentIndex + 1} / ${images.length}`;
+        }
+
+        return currentIndex;
+    }
+
+    // Touch swipe variables for card navigation
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    /**
+     * Handle swipe gesture on card images
+     * @param {HTMLElement} container - The item-image-container element
+     */
+    function handleSwipe(container) {
+        const swipeThreshold = 50; // Minimum distance for swipe
+        const diff = touchStartX - touchEndX;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                // Swiped left - next image
+                navigateImage(container, 1);
+            } else {
+                // Swiped right - previous image
+                navigateImage(container, -1);
+            }
+        }
+    }
+
     // ========== DATA LOADING ==========
 
     /**
@@ -233,7 +288,10 @@
             <div class="modal-overlay" id="imageModal">
                 <div class="modal-content">
                     <button class="modal-close" aria-label="Close modal">&times;</button>
+                    <button class="modal-nav-prev" aria-label="Previous image">‹</button>
+                    <button class="modal-nav-next" aria-label="Next image">›</button>
                     <img src="" alt="Full size image" class="modal-image" id="modalImage">
+                    <div class="modal-counter"></div>
                 </div>
             </div>
         `;
@@ -250,20 +308,118 @@
         const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
         const closeBtn = modal.querySelector('.modal-close');
+        const modalNavPrev = modal.querySelector('.modal-nav-prev');
+        const modalNavNext = modal.querySelector('.modal-nav-next');
+        const modalCounter = modal.querySelector('.modal-counter');
+
+        let currentModalCard = null; // Track which card opened the modal
+
+        // ===== CARD NAVIGATION =====
+
+        // Click arrow buttons on cards
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('image-nav-prev')) {
+                e.stopPropagation(); // Prevent modal from opening
+                const container = e.target.closest('.item-image-container');
+                navigateImage(container, -1);
+            } else if (e.target.classList.contains('image-nav-next')) {
+                e.stopPropagation();
+                const container = e.target.closest('.item-image-container');
+                navigateImage(container, 1);
+            }
+        });
+
+        // Touch swipe on cards
+        document.addEventListener('touchstart', function(e) {
+            const container = e.target.closest('.item-image-container');
+            if (container && !modal.classList.contains('active')) {
+                touchStartX = e.changedTouches[0].screenX;
+            }
+        });
+
+        document.addEventListener('touchend', function(e) {
+            const container = e.target.closest('.item-image-container');
+            if (container && !modal.classList.contains('active')) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe(container);
+            }
+        });
+
+        // ===== MODAL NAVIGATION =====
 
         // Click main image to open modal
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('item-main-image')) {
+                const card = e.target.closest('.item-card');
                 const fullImageSrc = e.target.getAttribute('data-full-image');
-                openModal(fullImageSrc);
+                openModal(fullImageSrc, card);
             }
         });
 
-        // Click thumbnail to switch main image
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('thumbnail')) {
-                switchMainImage(e.target);
+        function openModal(imageSrc, card) {
+            currentModalCard = card;
+            const container = card.querySelector('.item-image-container');
+            const images = JSON.parse(container.getAttribute('data-images'));
+            const currentIndex = parseInt(container.querySelector('.item-main-image').getAttribute('data-current-index') || 0);
+
+            modalImage.src = imageSrc;
+            modalImage.setAttribute('data-images', JSON.stringify(images));
+            modalImage.setAttribute('data-current-index', currentIndex);
+
+            // Update modal counter
+            updateModalCounter(currentIndex, images.length);
+
+            // Show/hide navigation for single vs multiple images
+            const hasMultiple = images.length > 1;
+            modalNavPrev.style.display = hasMultiple ? 'flex' : 'none';
+            modalNavNext.style.display = hasMultiple ? 'flex' : 'none';
+            modalCounter.style.display = hasMultiple ? 'block' : 'none';
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function navigateModalImage(direction) {
+            const images = JSON.parse(modalImage.getAttribute('data-images'));
+            let currentIndex = parseInt(modalImage.getAttribute('data-current-index') || 0);
+
+            currentIndex = (currentIndex + direction + images.length) % images.length;
+
+            modalImage.src = images[currentIndex];
+            modalImage.setAttribute('data-current-index', currentIndex);
+
+            updateModalCounter(currentIndex, images.length);
+
+            // Sync with card image
+            if (currentModalCard) {
+                const cardContainer = currentModalCard.querySelector('.item-image-container');
+                const cardImage = cardContainer.querySelector('.item-main-image');
+                cardImage.src = images[currentIndex];
+                cardImage.setAttribute('data-current-index', currentIndex);
+                cardImage.setAttribute('data-full-image', images[currentIndex]);
+
+                const cardCounter = cardContainer.querySelector('.image-counter');
+                if (cardCounter) {
+                    cardCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+                }
             }
+        }
+
+        function updateModalCounter(index, total) {
+            if (modalCounter && total > 1) {
+                modalCounter.textContent = `${index + 1} / ${total}`;
+            }
+        }
+
+        // Modal arrow buttons
+        modalNavPrev.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navigateModalImage(-1);
+        });
+
+        modalNavNext.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navigateModalImage(1);
         });
 
         // Close modal on button click
@@ -276,39 +432,52 @@
             }
         });
 
-        // Close modal on ESC key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modal.classList.contains('active')) {
-                closeModal();
-            }
-        });
-
-        function openModal(imageSrc) {
-            modalImage.src = imageSrc;
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
         function closeModal() {
             modal.classList.remove('active');
             document.body.style.overflow = '';
+            currentModalCard = null;
         }
 
-        function switchMainImage(thumbnail) {
-            const card = thumbnail.closest('.item-card');
-            const mainImage = card.querySelector('.item-main-image');
-            const fullImageSrc = thumbnail.getAttribute('data-full-image');
+        // ===== KEYBOARD NAVIGATION =====
 
-            // Update main image
-            mainImage.src = fullImageSrc;
-            mainImage.setAttribute('data-full-image', fullImageSrc);
+        document.addEventListener('keydown', function(e) {
+            if (modal.classList.contains('active')) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                } else if (e.key === 'ArrowLeft') {
+                    navigateModalImage(-1);
+                } else if (e.key === 'ArrowRight') {
+                    navigateModalImage(1);
+                }
+            }
+        });
 
-            // Update active thumbnail
-            card.querySelectorAll('.thumbnail').forEach(thumb => {
-                thumb.classList.remove('active');
-            });
-            thumbnail.classList.add('active');
-        }
+        // ===== MODAL SWIPE SUPPORT =====
+
+        let modalTouchStartX = 0;
+        let modalTouchEndX = 0;
+
+        modal.addEventListener('touchstart', function(e) {
+            if (e.target === modalImage) {
+                modalTouchStartX = e.changedTouches[0].screenX;
+            }
+        });
+
+        modal.addEventListener('touchend', function(e) {
+            if (e.target === modalImage) {
+                modalTouchEndX = e.changedTouches[0].screenX;
+                const diff = modalTouchStartX - modalTouchEndX;
+                const swipeThreshold = 50;
+
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        navigateModalImage(1);
+                    } else {
+                        navigateModalImage(-1);
+                    }
+                }
+            }
+        });
     }
 
     // Initialize on DOM ready

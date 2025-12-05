@@ -133,41 +133,70 @@ header a:hover {
     opacity: 0.9;
 }
 
+/* Hide old thumbnail styles - no longer used */
 .item-thumbnails {
-    display: flex;
-    gap: 8px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.95);
+    display: none !important;
+}
+
+/* Arrow navigation on cards */
+.image-nav-prev,
+.image-nav-next {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    justify-content: center;
-}
-
-.thumbnail {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    line-height: 1;
     cursor: pointer;
-    border: 2px solid transparent;
+    z-index: 10;
     transition: all 0.2s ease;
-    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.thumbnail:hover {
-    opacity: 1;
-    transform: scale(1.05);
+.image-nav-prev {
+    left: 10px;
 }
 
-.thumbnail.active {
-    border-color: #667eea;
-    opacity: 1;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+.image-nav-next {
+    right: 10px;
 }
 
-.item-card.single-image .item-thumbnails {
+.image-nav-prev:hover,
+.image-nav-next:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.image-nav-prev:active,
+.image-nav-next:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* Image counter on cards */
+.image-counter {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    z-index: 10;
+}
+
+/* Hide navigation for single-image items */
+.item-card.single-image .image-nav-prev,
+.item-card.single-image .image-nav-next,
+.item-card.single-image .image-counter {
     display: none;
 }
 
@@ -227,6 +256,62 @@ header a:hover {
     background: #667eea;
     color: white;
     transform: rotate(90deg);
+}
+
+/* Modal navigation arrows */
+.modal-nav-prev,
+.modal-nav-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-nav-prev {
+    left: 20px;
+}
+
+.modal-nav-next {
+    right: 20px;
+}
+
+.modal-nav-prev:hover,
+.modal-nav-next:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.modal-nav-prev:active,
+.modal-nav-next:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* Modal counter */
+.modal-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 1em;
+    z-index: 1001;
 }
 
 @keyframes fadeIn {
@@ -327,16 +412,15 @@ footer a:hover {
         grid-template-columns: 1fr;
     }
 
-    .thumbnail {
-        width: 50px;
-        height: 50px;
+    /* Card navigation arrows - mobile */
+    .image-nav-prev,
+    .image-nav-next {
+        width: 35px;
+        height: 35px;
+        font-size: 20px;
     }
 
-    .item-thumbnails {
-        gap: 6px;
-        padding: 8px;
-    }
-
+    /* Modal navigation - mobile */
     .modal-content {
         max-width: 95%;
     }
@@ -345,5 +429,26 @@ footer a:hover {
         top: -50px;
         width: 45px;
         height: 45px;
+    }
+
+    .modal-nav-prev,
+    .modal-nav-next {
+        width: 45px;
+        height: 45px;
+        font-size: 28px;
+    }
+
+    .modal-nav-prev {
+        left: 10px;
+    }
+
+    .modal-nav-next {
+        right: 10px;
+    }
+
+    .modal-counter {
+        bottom: 15px;
+        padding: 6px 12px;
+        font-size: 0.9em;
     }
 }
