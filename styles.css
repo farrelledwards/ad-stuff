@@ -280,6 +280,7 @@ header a:hover {
     color: #6b7280;
     line-height: 1.6;
     margin-bottom: 15px;
+    white-space: pre-line;
 }
 
 .item-availability {
