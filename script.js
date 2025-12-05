@@ -152,11 +152,11 @@
      */
     function renderItemDetails(item) {
         const priceHTML = item.askingPrice
-            ? `<div class="item-price">${item.askingPrice} AED</div>`
+            ? `<div class="item-price">AED ${item.askingPrice}</div>`
             : '<div class="item-price unavailable">Contact for price</div>';
 
         const originalPriceHTML = item.newPrice
-            ? `<div class="item-original-price">New: ${item.newPrice} AED</div>`
+            ? `<div class="item-original-price">New: AED ${item.newPrice}</div>`
             : '';
 
         const descriptionHTML = item.notes
